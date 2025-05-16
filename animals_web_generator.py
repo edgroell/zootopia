@@ -5,15 +5,21 @@ import os
 def load_data(file_path: str) -> list:
     """
     Loads data from json file.
-    :param file_path:
-    :return:
+    :param file_path: str indicating the path to the json file
+    :return: all_data: list containing all data from the json file
     """
     with open(file_path, "r") as handle:
         all_data = json.load(handle)
+
         return all_data
 
 
-def serialize_animal(animal):
+def serialize_animal(animal: dict) -> str:
+    """
+    Builds the entire string in html format for a given animal.
+    :param animal: dict containing all data from given animal.
+    :return: animals_cards: str containing all info of a given animal in html format.
+    """
     animals_cards = ''
 
     locations = animal.get('locations', ['Location not found'])
@@ -74,7 +80,11 @@ def serialize_animal(animal):
 
 
 def get_animal_cards(all_animals: list) -> str:
-    """ Prints Name, Diet, Location and Type (if any given) of each animal """
+    """
+    Builds the entire string in html format for all animals.
+    :param all_animals: list containing all info from all animals.
+    :return: animals_cards: str containing all info of all animals in html format.
+    """
     animals_cards = ''
 
     for animal in all_animals:
@@ -84,32 +94,50 @@ def get_animal_cards(all_animals: list) -> str:
 
 
 def open_template(file_path: str) -> str:
-    """ Reads the content of the template file """
+    """
+    Reads the content of the html template file.
+    :param file_path: str indicating the path to the html template file.
+    :return: page_template: str containing all info from the html template file.
+    """
     with open(file_path, "r") as handle:
         page_template = handle.read()
+
         return page_template
 
 
 def inject_animal_cards(page_template: str, animal_cards: str) -> str:
-    """ Injects animal cards into page_template """
-    return page_template.replace("__REPLACE_ANIMALS_INFO__", animal_cards)
+    """
+    Replaces the placeholder from the html template with data extracted from the json file (i.e., the animal cards).
+    :param page_template: str containing all info from the html template file.
+    :param animal_cards: str containing all info from all animals in html format.
+    :return: final_page_content: str containing the final page in html format.
+    """
+    final_page_content = page_template.replace("__REPLACE_ANIMALS_INFO__", animal_cards)
+
+    return final_page_content
 
 
-def build_repository_page(page: str) -> None:
-    """ Builds the repository page """
+def build_repository_page(final_content: str) -> None:
+    """
+    Builds the final html page containing the animal cards.
+    :param final_content: str containing the final page in html format.
+    :return: None
+    """
     if not os.path.exists('output'):
         os.mkdir('output')
+
     file_path = os.path.join('output', 'animals.html')
+
     with open(file_path, "w") as handle:
-        handle.write(page)
+        handle.write(final_content)
 
 
 def main():
-    animals_data = load_data('data/animals_data.json')
+    animals_data = load_data(os.path.join('data', 'animals_data.json'))
     animals_cards = get_animal_cards(animals_data)
-    page_template = open_template('templates/animals_template.html')
-    new_page_template = inject_animal_cards(page_template, animals_cards)
-    build_repository_page(new_page_template)
+    page_template = open_template(os.path.join('templates', 'animals_template.html'))
+    final_page_content = inject_animal_cards(page_template, animals_cards)
+    build_repository_page(final_page_content)
 
 
 if __name__ == "__main__":
