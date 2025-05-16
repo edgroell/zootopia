@@ -13,14 +13,18 @@ def get_animal_cards(all_animals: list) -> str:
     animals_cards = ''
 
     for animal in all_animals:
-        animals_cards += f"Name: {animal.get('name', 'Name not found')}\n"
-        animals_cards += f"Diet: {animal.get('characteristics', {}).get('diet', 'Diet not found')}\n"
-        animals_cards += f"Location: {animal.get('locations', 'Location not found')[0]}\n"
+        animals_cards += '<li class="cards__item">'
+        animals_cards += f"Name: {animal.get('name', 'Name not found')}<br/>\n"
+        animals_cards += f"Diet: {animal.get('characteristics', {}).get('diet', 'Diet not found')}<br/>\n"
+        #animals_cards += f"Location: {animal.get('locations', 'Location not found')[0]}<br/>\n"
+        locations = animal.get('locations', ['Location not found'])
+        locations_string = ', '.join(locations)
+        animals_cards += f"Location(s): {locations_string}<br/>\n"
 
         if animal.get('characteristics', {}).get('type') is not None:
-            animals_cards += f"Type: {animal.get('characteristics', {}).get('type').capitalize()}\n"
+            animals_cards += f"Type: {animal.get('characteristics', {}).get('type').capitalize()}<br/>\n"
 
-        animals_cards += f"\n"
+        animals_cards += f"</li>"
 
     return animals_cards
 
