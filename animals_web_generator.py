@@ -8,25 +8,65 @@ def load_data(file_path: str) -> list:
         return all_data
 
 
+def serialize_animal(animal):
+    animals_cards = ''
+
+    locations = animal.get('locations', ['Location not found'])
+    locations_string = ', '.join(locations)
+
+    animals_cards += '<li class="cards__item">\n'
+    animals_cards += ('<div class="card__title">'
+                      + animal.get('name', 'Name not found')
+                      + '</div>\n')
+    animals_cards += '<p class="card__text">'
+    animals_cards += ('<strong>'
+                      + 'Diet:'
+                      + '</strong>'
+                      + ' '
+                      + animal.get('characteristics', {}).get('diet', 'Diet not found')
+                      + '<br/>\n')
+
+    if animal.get('characteristics', {}).get('type') is not None:
+        animals_cards += ('<strong>'
+                          + 'Type:'
+                          + '</strong>'
+                          + ' '
+                          + animal.get('characteristics', {}).get('type').capitalize()
+                          + '<br/>\n')
+
+    animals_cards += ('<strong>'
+                      + 'Location(s):'
+                      + '</strong>'
+                      + ' '
+                      + f"{locations_string}"
+                      + '<br/>\n')
+    animals_cards += ('<strong>'
+                      + 'Lifespan:'
+                      + '</strong>'
+                      + ' '
+                      + animal.get('characteristics', {}).get('lifespan', 'Lifespan not found')
+                      + '<br/>\n')
+
+    if animal.get('characteristics', {}).get('top_speed') is not None:
+        animals_cards += ('<strong>'
+                          + 'Top Speed:'
+                          + '</strong>'
+                          + ' '
+                          + animal.get('characteristics', {}).get('top_speed')
+                          + '<br/>\n')
+
+    animals_cards += '</p>\n'
+    animals_cards += f"</li>\n"
+
+    return animals_cards
+
+
 def get_animal_cards(all_animals: list) -> str:
     """ Prints Name, Diet, Location and Type (if any given) of each animal """
     animals_cards = ''
 
     for animal in all_animals:
-        locations = animal.get('locations', ['Location not found'])
-        locations_string = ', '.join(locations)
-
-        animals_cards += '<li class="cards__item">\n'
-        animals_cards += '<div class="card__title">' + animal.get('name', 'Name not found') + '</div>\n'
-        animals_cards += '<p class="card__text">'
-        animals_cards += '<strong>' + 'Diet:' + '</strong>' + ' ' + animal.get('characteristics', {}).get('diet', 'Diet not found') + '<br/>\n'
-        animals_cards += '<strong>' + 'Location(s):' + '</strong>' +  ' ' + f"{locations_string}" + '<br/>\n'
-
-        if animal.get('characteristics', {}).get('type') is not None:
-            animals_cards += '<strong>' + 'Type:' + '</strong>' + ' ' + animal.get('characteristics', {}).get('type').capitalize() + '<br/>\n'
-
-        animals_cards += '</p>\n'
-        animals_cards += f"</li>\n"
+        animals_cards += serialize_animal(animal)
 
     return animals_cards
 
@@ -43,7 +83,7 @@ def inject_animal_cards(page_template: str, animal_cards: str) -> str:
     return page_template.replace("__REPLACE_ANIMALS_INFO__", animal_cards)
 
 
-def build_repository_page(page: str) -> str:
+def build_repository_page(page: str) -> None:
     """ Builds the repository page """
     with open("animals.html", "w") as handle:
         handle.write(page)
