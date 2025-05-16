@@ -13,18 +13,20 @@ def get_animal_cards(all_animals: list) -> str:
     animals_cards = ''
 
     for animal in all_animals:
-        animals_cards += '<li class="cards__item">'
-        animals_cards += f"Name: {animal.get('name', 'Name not found')}<br/>\n"
-        animals_cards += f"Diet: {animal.get('characteristics', {}).get('diet', 'Diet not found')}<br/>\n"
-        #animals_cards += f"Location: {animal.get('locations', 'Location not found')[0]}<br/>\n"
         locations = animal.get('locations', ['Location not found'])
         locations_string = ', '.join(locations)
-        animals_cards += f"Location(s): {locations_string}<br/>\n"
+
+        animals_cards += '<li class="cards__item">\n'
+        animals_cards += '<div class="card__title">' + animal.get('name', 'Name not found') + '</div>\n'
+        animals_cards += '<p class="card__text">'
+        animals_cards += '<strong>' + 'Diet:' + '</strong>' + ' ' + animal.get('characteristics', {}).get('diet', 'Diet not found') + '<br/>\n'
+        animals_cards += '<strong>' + 'Location(s):' + '</strong>' +  ' ' + f"{locations_string}" + '<br/>\n'
 
         if animal.get('characteristics', {}).get('type') is not None:
-            animals_cards += f"Type: {animal.get('characteristics', {}).get('type').capitalize()}<br/>\n"
+            animals_cards += '<strong>' + 'Type:' + '</strong>' + ' ' + animal.get('characteristics', {}).get('type').capitalize() + '<br/>\n'
 
-        animals_cards += f"</li>"
+        animals_cards += '</p>\n'
+        animals_cards += f"</li>\n"
 
     return animals_cards
 
