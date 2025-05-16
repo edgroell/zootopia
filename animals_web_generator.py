@@ -225,6 +225,8 @@ def build_repository_page(final_content: str) -> None:
     with open(file_path, "w") as handle:
         handle.write(final_content)
 
+    print(f"Page has been created at {file_path}")
+
 
 def get_user_choice_loop() -> None:
     """
