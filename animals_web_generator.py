@@ -8,22 +8,47 @@ def load_data(file_path: str) -> list:
         return all_data
 
 
-def print_animals(all_animals: list) -> None:
+def get_animal_cards(all_animals: list) -> str:
     """ Prints Name, Diet, Location and Type (if any given) of each animal """
+    animals_cards = ''
+
     for animal in all_animals:
-        print(f"Name: {animal.get('name', 'Name not found')}")
-        print(f"Diet: {animal.get('characteristics', {}).get('diet', 'Diet not found')}")
-        print(f"Location: {animal.get('locations', 'Location not found')[0]}")
+        animals_cards += f"Name: {animal.get('name', 'Name not found')}\n"
+        animals_cards += f"Diet: {animal.get('characteristics', {}).get('diet', 'Diet not found')}\n"
+        animals_cards += f"Location: {animal.get('locations', 'Location not found')[0]}\n"
 
         if animal.get('characteristics', {}).get('type') is not None:
-            print(f"Type: {animal.get('characteristics', {}).get('type').capitalize()}")
+            animals_cards += f"Type: {animal.get('characteristics', {}).get('type').capitalize()}\n"
 
-        print("")
+        animals_cards += f"\n"
+
+    return animals_cards
+
+
+def open_template(file_path: str) -> str:
+    """ Reads the content of the template file """
+    with open(file_path, "r") as handle:
+        page_template = handle.read()
+        return page_template
+
+
+def inject_animal_cards(page_template: str, animal_cards: str) -> str:
+    """ Injects animal cards into page_template """
+    return page_template.replace("__REPLACE_ANIMALS_INFO__", animal_cards)
+
+
+def build_repository_page(page: str) -> str:
+    """ Builds the repository page """
+    with open("animals.html", "w") as handle:
+        handle.write(page)
 
 
 def main():
     animals_data = load_data('animals_data.json')
-    print_animals(animals_data)
+    animals_cards = get_animal_cards(animals_data)
+    page_template = open_template('animals_template.html')
+    new_page_template = inject_animal_cards(page_template, animals_cards)
+    build_repository_page(new_page_template)
 
 
 if __name__ == "__main__":
