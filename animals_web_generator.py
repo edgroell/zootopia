@@ -8,7 +8,7 @@ def load_data(file_path: str) -> list:
     :param file_path: str indicating the path to the json file
     :return: all_data: list containing all data from the json file
     """
-    with open(file_path, "r") as handle:
+    with open(file_path, "r", encoding="utf-8") as handle:
         all_data = json.load(handle)
 
         return all_data
@@ -41,8 +41,7 @@ def get_user_choice_skin(skin_types: list) -> str:
 
             return user_choice_skin
 
-        else:
-            print("Invalid skin type")
+        print("Invalid skin type")
 
 
 def extract_animals_selection(all_animals: list, user_choice_skin: str) -> list:
@@ -88,7 +87,6 @@ def get_user_choice_animals(all_animals: list):
     """
     while True:
         user_choice = input("\nDo you want all animals or select by skin type? (all/skin): ").lower().strip()
-
         if user_choice == "all":
 
             return all_animals
@@ -193,7 +191,7 @@ def open_template(file_path: str) -> str:
     :param file_path: str indicating the path to the html template file.
     :return: page_template: str containing all info from the html template file.
     """
-    with open(file_path, "r") as handle:
+    with open(file_path, "r", encoding="utf-8") as handle:
         page_template = handle.read()
 
         return page_template
@@ -222,25 +220,30 @@ def build_repository_page(final_content: str) -> None:
 
     file_path = os.path.join('output', 'animals.html')
 
-    with open(file_path, "w") as handle:
+    with open(file_path, "w", encoding="utf-8") as handle:
         handle.write(final_content)
 
     print(f"Page has been created at {file_path}")
 
 
-def get_user_choice_loop() -> None:
+def get_user_choice_loop() -> bool:
     """
     Prompts user whether to have another search or exit the program.
-    :return: None
+    :return: bool: handles user choice whether to continue or not.
     """
-    continue_or_exit = input("\nDo you want to continue? (y/n): ").lower().strip()
-    if continue_or_exit == 'y':
-        return
-    elif continue_or_exit == 'n':
-        print("\nGoodbye and see you nex time!\n")
-        exit()
-    else:
-        print("Please enter 'y' or 'n'.")
+    while True:
+        continue_or_exit = input("\nDo you want to continue? (y/n): ").lower().strip()
+        if continue_or_exit == 'y':
+
+            return True
+
+        elif continue_or_exit == 'n':
+            print("\nGoodbye and see you next time!\n")
+
+            return False
+
+        else:
+            print("Please enter 'y' or 'n'.")
 
 
 def main():
@@ -251,7 +254,9 @@ def main():
         page_template = open_template(os.path.join('templates', 'animals_template.html'))
         final_page_content = inject_animal_cards(page_template, animals_cards)
         build_repository_page(final_page_content)
-        get_user_choice_loop()
+
+        if not get_user_choice_loop():
+            break
 
 
 if __name__ == "__main__":
