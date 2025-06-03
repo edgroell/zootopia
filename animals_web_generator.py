@@ -237,13 +237,12 @@ def get_user_choice_loop() -> bool:
 
             return True
 
-        elif continue_or_exit == 'n':
+        if continue_or_exit == 'n':
             print("\nGoodbye and see you next time!\n")
 
             return False
 
-        else:
-            print("Please enter 'y' or 'n'.")
+        print("Please enter 'y' or 'n'.")
 
 
 def main():
